@@ -1,33 +1,99 @@
-import { useState } from 'react'
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet'
+import 'leaflet/dist/leaflet.css'
+
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
+
+import { useEffect, useState } from 'react'
 import './App.css'
 
+function MapEvents({ onDoubleClick }) {
+    useMapEvents({
+        dblclick(e) {
+            console.log('DOUBLE CLICK:', e.latlng)
+            onDoubleClick(e.latlng)
+        }
+    })
+    return null
+}
+
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [pins, setPins] = useState([])
+
+  useEffect(() => {
+        fetch('http://127.0.0.1:5000/api/pins')
+            .then(response => {
+                console.log('GET /api/pins:', response.status)
+                return response.json()
+            })
+            .then(data => {
+                console.log('Existing pins:', data)
+                setPins(data)
+            })
+            .catch(error => {
+                console.error('Could not load pins:', error)
+            })
+    }, [])
+
+  const handleDoubleClick = async ({ lat, lng }) => {
+        console.log('Saving pin:', lat, lng)
+
+        try {
+            const response = await fetch('http://127.0.0.1:5000/api/pins', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    latitude: lat,
+                    longitude: lng,
+                    title: 'New Pin',
+                    description: ''
+                })
+            })
+
+            console.log('POST /api/pins:', response.status)
+
+            const data = await response.json()
+            console.log('Saved pin:', data)
+
+            if (!response.ok) {
+                console.error('Server error:', data)
+                return
+            }
+
+            setPins(prev => [...prev, data])
+        } catch (error) {
+            console.error('Could not save pin:', error)
+        }
+    }
 
   return (
     <>
+      <div className="header">
+          <h1>BeenThere</h1>
+      </div>
       <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+        <div className="map">
+          <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={true} doubleClickZoom={false}>
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <MapEvents onDoubleClick={handleDoubleClick} />
+            {pins.map(pin => {
+                return (
+                    <Marker
+                        key={pin.id}
+                        position={[Number(pin.latitude), Number(pin.longitude)]}
+                    />
+                )
+            })}
+          </MapContainer>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
+        
       </section>
 
       <div className="ticks"></div>
