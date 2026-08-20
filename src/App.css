@@ -1,0 +1,248 @@
+/*  App.css  */
+/* Variables */
+
+:root {
+  --bg: #0f1014;
+  --surface: #16171d;
+  --surface-hover: #1d1f27;
+
+  --text: #f1f1f3;
+  --text-muted: #9a9ca5;
+
+  --accent: #4c77af;
+  --accent-hover: #5b89c7;
+
+  --danger: #913d3d;
+  --danger-hover: #a94a4a;
+
+  --border: #2a2c34;
+
+  --radius: 8px;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Base */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+/* Header */
+
+.header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 60px;
+  box-shadow: 0px 2px 12px rgba(149, 149, 149, 0.2);
+}
+
+.header h1 {
+  margin-left: 5%;
+  font-size: 24px;
+  letter-spacing: 0px;
+  font-weight: 700;
+}
+
+/* Map */
+
+.map {
+  height: 600px;
+  width: 90%;
+  padding-bottom: 1rem;
+}
+
+.leaflet-container {
+  height: 600px;
+}
+
+/* Buttons */
+
+button {
+  font: inherit;
+}
+
+.modal-buttons button {
+  padding: 10px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.1s ease;
+}
+
+.modal-buttons button:hover {
+  background: var(--accent-hover);
+}
+
+.modal-buttons button:active {
+  transform: scale(0.97);
+}
+
+/* Modal */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal {
+  width: 400px;
+  max-width: calc(100% - 40px);
+  padding: 24px;
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+
+  animation: modalIn 0.2s ease-out;
+}
+
+.modal h2 {
+  margin: 0 0 20px;
+}
+
+.modal label {
+  display: block;
+  margin-bottom: 16px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.modal input,
+.modal textarea {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 12px;
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+
+  background: var(--bg);
+  color: var(--text);
+
+  font: inherit;
+
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.modal input:focus,
+.modal textarea:focus {
+  border-color: var(--accent);
+}
+
+.modal textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.modal p {
+  margin: 0 0 20px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* Modal Actions */
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.modal-buttons .delete-button {
+  background: var(--danger);
+}
+
+.modal-buttons .delete-button:hover {
+  background: var(--danger-hover);
+}
+
+/* Main layout */
+
+.centre {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  flex-grow: 1;
+  gap: 25px;
+
+  margin-top: 1rem;
+}
+
+.spacer {
+  height: 48px;
+  border-top: 1px solid var(--border);
+}
+
+/* Animations */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Responsive */
+
+@media (max-width: 1024px) {
+  #centre {
+    gap: 18px;
+    padding: 32px 20px 24px;
+  }
+
+  #spacer {
+    height: 48px;
+  }
+}
