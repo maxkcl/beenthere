@@ -101,6 +101,25 @@ button {
   transform: scale(0.97);
 }
 
+.map-mode-toggle-button {
+  margin-left: 5%;
+  margin-top: 1%;
+  margin-bottom: 1%;
+  padding: 10px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.1s ease;
+}
+
+.map-mode-toggle-button:hover {
+  background: var(--accent-hover);
+}
+
 /* Modal */
 
 .modal-overlay {

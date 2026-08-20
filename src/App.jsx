@@ -5,6 +5,7 @@ import "leaflet/dist/leaflet.css";
 import "./App.css";
 import AddPinModal from "./AddPinModal";
 import PinModal from "./PinModal";
+import Choropleth from "./Choropleth";
 
 // This handles the double click on the map.
 function MapEvents({ onDoubleClick }) {
@@ -22,6 +23,7 @@ function App() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [selectedPin, setSelectedPin] = useState(null);
+  const [mapMode, setMapMode] = useState("pins");
 
   // Loading pins on startup
   useEffect(() => {
@@ -130,19 +132,27 @@ function App() {
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              noWrap={true}
             />
-            <MapEvents onDoubleClick={handleDoubleClick} />
-            {pins.map((pin) => {
-              return (
-                <Marker
-                  key={pin.id}
-                  position={[Number(pin.latitude), Number(pin.longitude)]}
-                  eventHandlers={{
-                    click: () => setSelectedPin(pin),
-                  }}
-                />
-              );
-            })}
+            {mapMode === "pins" && (
+              <>
+                <MapEvents onDoubleClick={handleDoubleClick} />
+                {pins.map((pin) => {
+                  return (
+                    <Marker
+                      key={pin.id}
+                      position={[Number(pin.latitude), Number(pin.longitude)]}
+                      eventHandlers={{
+                        click: () => setSelectedPin(pin),
+                      }}
+                    />
+                  );
+                })}
+              </>
+            )}
+            {mapMode === "countries" && (
+              <Choropleth pins={pins} />
+            )}
           </MapContainer>
           {newPin && (
             <AddPinModal
@@ -163,6 +173,11 @@ function App() {
           )}
         </div>
       </section>
+      <button className="map-mode-toggle-button"
+        onClick={() => setMapMode(mapMode === "pins" ? "countries" : "pins")}
+      >
+        {mapMode === "pins" ? "Show Countries" : "Show Pins"}
+      </button>
       <section className="spacer"></section>
     </>
   );
